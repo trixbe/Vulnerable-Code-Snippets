@@ -13,7 +13,17 @@ namespace WebFox.Controllers
         public void DoXxe(String xmlString)
         {
             XmlDocument xmlDoc = new XmlDocument();
-            xmlDoc.LoadXml(xmlString);
+            
+            // create secure settings
+            var settings = new XmlReaderSettings();
+            settings.DtdProcessing = DtdProcessing.Ignore;
+            
+            // wrap XML string in a secure reader
+            using (var stringReader = new System.IO.StringReader(xmlString))
+            using (var secureReader = XmlReader.Create(stringReader, settings))
+            {
+                xmlDoc.Load(secureReader);
+            }
         }
     }
 }
